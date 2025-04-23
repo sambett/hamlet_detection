@@ -1,0 +1,65 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environments
+venv/
+ENV/
+.venv/
+.env/
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Model files and training artifacts
+*.pt
+*.pth
+*.onnx
+*.tflite
+*.mlpackage
+runs/
+weights/
+
+# Demo files
+results/
+*.mp4
+*.avi
+*.mov
+*.jpg
+*.jpeg
+*.png
+!assets/*.jpg
+!assets/*.png
+
+# Logs
+logs/
+*.log
+
+# Distribution / packaging
+.Python
+.DS_Store
