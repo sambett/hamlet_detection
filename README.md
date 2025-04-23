@@ -19,61 +19,22 @@ A fast, lightweight, and accurate helmet detection system powered by YOLOv8n. Th
 
 ### Installation Steps
 
-1. Clone or download this repository:
-   ```bash
-   git clone [repository-url]
-   cd helmet-detection
-   ```
-
-2. Create a virtual environment (recommended):
-   ```bash
-   python -m venv venv
-   
-   # On Windows
-   venv\Scripts\activate
-   
-   # On macOS/Linux
-   source venv/bin/activate
-   ```
-
-3. Install dependencies:
+1. Install dependencies:
    ```bash
    pip install -r requirements.txt
    ```
 
-4. Download the model and setup the project:
+2. Download the YOLOv8n model:
    ```bash
-   python setup.py
+   python -c "from ultralytics import YOLO; YOLO('yolov8n.pt')"
    ```
 
-5. If you have a dataset path, run:
+3. Run the application:
    ```bash
-   python setup.py --dataset [path/to/your/dataset]
+   streamlit run app.py
    ```
 
-## 🏃‍♂️ Running the Application
-
-Start the Streamlit application:
-```bash
-streamlit run app.py
-```
-
-The application will open in your default browser, typically at http://localhost:8501.
-
-## 🏋️‍♂️ Training (Optional)
-
-If you want to train the model on your dataset:
-
-```bash
-python train.py --dataset [path/to/your/dataset] --epochs 20 --batch 16 --export
-```
-
-Arguments:
-- `--dataset`: Path to the dataset directory (required)
-- `--epochs`: Number of training epochs (default: 20)
-- `--batch`: Batch size (default: 16)
-- `--img-size`: Image size (default: 640)
-- `--export`: Export model to ONNX format after training
+4. Access the interface in your web browser at http://localhost:8501
 
 ## 📋 Usage Guide
 
@@ -100,49 +61,42 @@ Arguments:
 4. View real-time detection results
 5. Click "⏹️ Stop Webcam" when finished
 
+## 🏋️‍♂️ Training (Optional)
+
+To fine-tune the model on the Helmet Detection dataset:
+
+1. Create a training script:
+   ```bash
+   python train.py --dataset [path-to-dataset] --epochs 20 --export
+   ```
+
+2. Test the model:
+   ```bash
+   python test.py --image [path-to-test-image]
+   ```
+
 ## 🔧 Technical Details
+
+### Dataset Information
+
+This system works with the Helmet Detection dataset containing 5,000 images with bounding box annotations for three classes:
+- Helmet
+- Person
+- Head
+
+The dataset uses PASCAL VOC format and provides a balanced distribution of examples showing people with and without helmets in various scenarios.
 
 ### Model Information
 
-This project uses YOLOv8n (nano), a lightweight object detection model from Ultralytics. Key specifications:
+This project uses YOLOv8n (nano), a lightweight object detection model from Ultralytics:
 
 - **Model Size**: ~6MB
 - **Inference Speed**: Optimized for CPU usage
 - **Input Resolution**: 640x640 pixels
 - **Backbone**: CSPDarknet
-- **Classes**: Detects Helmet, Head, and Person
-
-### Dataset Requirements
-
-The expected dataset format is YOLO format with the following structure:
-```
-dataset/
-├── data.yaml
-├── train/
-│   ├── images/
-│   └── labels/
-├── valid/
-│   ├── images/
-│   └── labels/
-└── test/
-    ├── images/
-    └── labels/
-```
-
-The `data.yaml` file should contain class information, for example:
-```yaml
-names:
-  0: Helmet
-  1: Person
-  2: Head
-```
 
 ### Performance Optimization
 
 - **ONNX Export**: Model is exported to ONNX format for faster CPU inference
 - **Frame Sampling**: Processes subset of video frames for smoother performance
 - **Confidence Threshold**: Adjustable to filter out low-confidence detections
-
-## 🤝 License
-
-This project is licensed under the MIT License.

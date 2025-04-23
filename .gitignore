@@ -41,7 +41,6 @@ ENV/
 *.pth
 *.onnx
 *.tflite
-*.mlpackage
 runs/
 weights/
 
@@ -50,11 +49,6 @@ results/
 *.mp4
 *.avi
 *.mov
-*.jpg
-*.jpeg
-*.png
-!assets/*.jpg
-!assets/*.png
 
 # Logs
 logs/

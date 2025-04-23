@@ -48,12 +48,6 @@ st.markdown("""
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         margin-bottom: 1.5rem;
     }
-    .stats-card {
-        background-color: white;
-        border-radius: 10px;
-        padding: 1rem;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
     .stButton > button {
         background-color: #007bff;
         color: white;
@@ -80,9 +74,6 @@ st.markdown("""
         text-align: center;
         margin-top: 2rem;
         color: #6c757d;
-    }
-    .stProgress > div > div > div {
-        background-color: #007bff;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -126,10 +117,8 @@ with st.sidebar:
         help="Adjust how confident the model must be to report a detection"
     )
     
-    # Class filter
-    st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
-    
     # Input selection
+    st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
     input_source = st.radio(
         "Select Input Source",
         ["📷 Image", "🎥 Video", "📹 Webcam"],
@@ -412,10 +401,10 @@ elif "🎥 Video" in input_source:
                     x=alt.X('time:Q', title='Time (seconds)'),
                     y=alt.Y('class:N', title='Detection Class'),
                     color=alt.Color('class:N', 
-                                   scale=alt.Scale(
-                                       domain=['Helmet', 'Head', 'Person'],
-                                       range=['#28a745', '#dc3545', '#17a2b8']
-                                   )),
+                                  scale=alt.Scale(
+                                      domain=['Helmet', 'Head', 'Person'],
+                                      range=['#28a745', '#dc3545', '#17a2b8']
+                                  )),
                     size=alt.Size('count:Q', title='Count', scale=alt.Scale(range=[50, 200])),
                     tooltip=['time:Q', 'class:N', 'count:Q', 'frame:Q']
                 ).properties(
