@@ -1,84 +1,64 @@
-import os
+from ultralytics import YOLO
 import argparse
-import matplotlib.pyplot as plt
-from model_utils import download_model, train_model, export_model, setup_dataset, get_test_images, run_inference
+import os
+import time
 
-def visualize_results(results, test_images, model):
-    """Visualize detection results on test images"""
-    print("Visualizing detection results on test images...")
+def train_model(data_yaml, model_name, epochs, batch_size, imgsz, device, project, name):
+    """
+    Train a YOLOv8 model
+    """
+    # Load the model
+    model = YOLO(model_name)
     
-    if not os.path.exists("results"):
-        os.makedirs("results")
-    
-    plt.figure(figsize=(20, 20))
-    for i, img_path in enumerate(test_images):
-        # Run inference on test image
-        results, annotated_img = run_inference(model, img_path, conf=0.3)
-        
-        # Save annotated image
-        img_name = os.path.basename(img_path)
-        plt.subplot(len(test_images), 2, i*2+1)
-        plt.imshow(plt.imread(img_path))
-        plt.title(f"Original: {img_name}")
-        plt.axis("off")
-        
-        plt.subplot(len(test_images), 2, i*2+2)
-        plt.imshow(annotated_img)
-        plt.title(f"Detected: {img_name}")
-        plt.axis("off")
-        
-        # Print detection details
-        print(f"\nResults for {img_name}:")
-        boxes = results.boxes
-        for box in boxes:
-            cls = int(box.cls[0].item())
-            conf = box.conf[0].item()
-            class_name = results.names[cls]
-            print(f"- Detected: {class_name} with confidence {conf:.2f}")
-    
-    # Save the visualization
-    plt.tight_layout()
-    plt.savefig("results/test_detections.png")
-    plt.close()
-    print("Results saved to 'results/test_detections.png'")
-
-def main():
-    parser = argparse.ArgumentParser(description="Train Helmet Detection Model")
-    parser.add_argument("--dataset", required=True, help="Path to the dataset directory")
-    parser.add_argument("--epochs", type=int, default=20, help="Number of training epochs")
-    parser.add_argument("--batch", type=int, default=16, help="Batch size")
-    parser.add_argument("--img-size", type=int, default=640, help="Image size")
-    parser.add_argument("--export", action="store_true", help="Export model to ONNX format")
-    args = parser.parse_args()
-    
-    # Setup dataset
-    yaml_path, data_config = setup_dataset(args.dataset)
-    
-    # Download or load model
-    base_model = download_model("yolov8n.pt")
-    
-    # Train model
-    print(f"Training model for {args.epochs} epochs...")
-    trained_model = train_model(
-        yaml_path, 
-        model_name="yolov8n.pt", 
-        epochs=args.epochs,
-        batch_size=args.batch,
-        image_size=args.img_size
+    # Train the model
+    print(f"Starting training for {epochs} epochs...")
+    results = model.train(
+        data=data_yaml,
+        epochs=epochs,
+        batch=batch_size,
+        imgsz=imgsz,
+        device=device,
+        project=project,
+        name=name,
+        verbose=True
     )
     
-    # Export model if requested
-    if args.export:
-        export_path = export_model(trained_model, format="onnx")
-        print(f"Model exported to: {export_path}")
-    
-    # Get some test images to visualize results
-    test_images = get_test_images(args.dataset, num_images=5)
-    if test_images:
-        visualize_results(None, test_images, trained_model)
-    
-    print("\nTraining completed successfully!")
-    print("To run the Streamlit app, use the command: streamlit run app.py")
+    print("Training completed!")
+    return results
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description='Train YOLOv8 model for helmet detection')
+    parser.add_argument('--data', type=str, default='dataset_yolo/data.yaml', help='Path to data.yaml file')
+    parser.add_argument('--model', type=str, default='yolov8n.pt', help='Model size (yolov8n.pt, yolov8s.pt, etc.)')
+    parser.add_argument('--epochs', type=int, default=50, help='Number of epochs for training')
+    parser.add_argument('--batch', type=int, default=16, help='Batch size')
+    parser.add_argument('--imgsz', type=int, default=640, help='Image size')
+    parser.add_argument('--device', type=str, default='0', help='Device to use (0, 0,1,2,3, cpu)')
+    parser.add_argument('--project', type=str, default='runs/train', help='Project name')
+    parser.add_argument('--name', type=str, default='helmet_detection', help='Experiment name')
+    
+    args = parser.parse_args()
+    
+    # Make data.yaml path absolute if it's relative
+    if not os.path.isabs(args.data):
+        args.data = os.path.join(os.getcwd(), args.data)
+    
+    start_time = time.time()
+    
+    # Train the model
+    results = train_model(
+        data_yaml=args.data,
+        model_name=args.model,
+        epochs=args.epochs,
+        batch_size=args.batch,
+        imgsz=args.imgsz,
+        device=args.device,
+        project=args.project,
+        name=args.name
+    )
+    
+    end_time = time.time()
+    training_time = end_time - start_time
+    
+    print(f"Total training time: {training_time:.2f} seconds ({training_time/60:.2f} minutes)")
+    print(f"Best model saved to: {results.best}")
