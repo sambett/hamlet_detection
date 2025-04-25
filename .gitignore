@@ -37,15 +37,21 @@ ENV/
 .ipynb_checkpoints
 
 # Model files and training artifacts
-# NOTE: Include specific model files for direct use
-# Exclude base pretrained models
+# Base pretrained models
 yolov8n.pt
 yolov8s.pt
 yolov8m.pt
 yolov8l.pt
 yolov8x.pt
 
-# Keep our trained model
+# Dataset files
+dataset_yolo/images/
+dataset_yolo/labels/
+
+# Training runs
+runs/
+
+# Keep only our best trained model
 !runs/train/helmet_detection3/weights/best.pt
 
 # Demo files
