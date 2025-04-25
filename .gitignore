@@ -67,14 +67,12 @@ logs/
 .DS_Store
 Thumbs.db
 
-# Large dataset files (raw data)
-hemlet dataset/images/*
-hemlet dataset/annotations/*
-# Keep directory structure
-!hemlet dataset/images/.gitkeep
-!hemlet dataset/annotations/.gitkeep
+# Dataset directories - excluded completely
+hemlet dataset/
+dataset_yolo/images/
+dataset_yolo/labels/
 
-# Keep processed YOLO dataset metadata
+# Keep only the data.yaml file
 !dataset_yolo/data.yaml
 
 # Keep sample images/videos for testing

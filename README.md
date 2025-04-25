@@ -11,6 +11,17 @@ An advanced computer vision system that monitors construction sites for proper h
 
 This construction safety system uses YOLOv8 object detection to identify workers with and without helmets, helping enforce safety regulations and prevent workplace accidents. The system processes images, videos, and webcam feeds with a modern, intuitive interface.
 
+### Dataset
+
+The model was trained on the Hard Hat Detection dataset from Kaggle containing construction site images with workers wearing and not wearing helmets:
+
+**[Download the Hard Hat Detection Dataset from Kaggle](https://www.kaggle.com/datasets/andrewmvd/hard-hat-detection?resource=download)**
+
+To use this dataset with the project:
+1. Download and extract the dataset from Kaggle
+2. Place it in the 'hemlet dataset' directory
+3. Run the prepare_dataset.py script to convert it to YOLO format
+
 ### Key Results
 
 | Class   | mAP50 | mAP50-95 |
